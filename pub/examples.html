@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Seui2 JS Library Examples</title>
+    <link rel="stylesheet" type="text/css" href="examples.css"></link>
+    <script defer type="text/javascript" src="seui2.js"></script>
+    <script defer type="text/javascript" src="examples.js"></script>
+  </head>
+  <body>
+    <div id="libDesc">
+      <h1>Seui2 JS Library</h1>
+      <p>Making animations flow.</p>
+    </div>
+    <div id="badExample">
+      <h2>The Problem</h2>
+      <p>We do not want web elements to overlap each other during animations.</p>
+      <svg width="1066" height="447">
+        <image id="badExMain"
+          href="images/derek-thomson-TWoL-QCZubY-unsplash.jpg"
+          x="213" y="10"
+          width="640" height="427"
+        >
+        </image>
+        <image id="badExRat"
+          href="images/evgeny-karchevsky-k1tUxfs8JYY-unsplash.jpg"
+          x="43" y="100"
+          width="160" height="213"
+        >
+          <animateMotion
+            path="m 0 0 h 820 h -820"
+            dur="10s"
+            repeatCount="indefinite"
+            calcMode="linear"
+            keyTimes="0; 0.2; 0.25; 0.45; 0.5; 0.7; 0.75; 0.95; 1"
+            keyPoints="0; 0; 0.1; 0.4; 0.5; 0.5; 0.6; 0.9; 1"
+          >
+          </animateMotion>
+        </image>
+      </svg>
+    </div>
+    <div id="example1">
+      <h2>Example 1</h2>
+      <p>Click the smaller picture to animate it.</p>
+      <svg width="1066" height="670">
+        <image id="ex1Main"
+          href="images/derek-thomson-TWoL-QCZubY-unsplash.jpg"
+          x="213" y="10"
+          width="640" height="427"
+        >
+        </image>
+        <image id="ex1Rat"
+          href="images/evgeny-karchevsky-k1tUxfs8JYY-unsplash.jpg"
+          x="873" y="100"
+          width="160" height="213"
+        >
+          <animatemotion href="#ex1Rat" path="m 0 0 h 337z"
+            dur="1s" repeatcount="1" begin="click"></animatemotion>
+        </image>
+      </svg>
+    </div>
+    <div id="interactiveExample">
+      <h2>Example 2</h2>
+      <p>Try setting different values for the width and the height of the element to avoid.
+        The library will take this into account and generate the new path.
+        Click the picture to animate it.
+      </p>
+      <form id="changeDimForm">
+        <label for="width">Width: </label>
+        <input id="widthInput" type="number" placeholder="640" name="width">
+        <label for="height">Height: </label>
+        <input id="heightInput" type="number" placeholder="427" name="height">
+        <button id="submit">Submit</button>
+      </form>
+      <svg width="1200" height="1000">
+        <rect id="ex2Main"
+          x="213" y="10"
+          width="640" height="427"
+          fill="blue";
+        >
+        </rect>
+        <image id="ex2Rat"
+          href="images/evgeny-karchevsky-k1tUxfs8JYY-unsplash.jpg"
+          x="43" y="100"
+          width="160" height="213"
+        >
+        </image>
+      </svg>
+    </div>
+
+  </body>
+</html>
