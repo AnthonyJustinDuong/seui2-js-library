@@ -118,7 +118,7 @@ function generatePath(toAnimateDim, toAvoidDim, animationSpecs) {
   const {width: anW, height: anH} = toAnimateDim;
   const {x: avX, y: avY, width: avW, height: avH} = toAvoidDim;
   const {start, end, direction, padding, paddingLeft, paddingTop, paddingRight,
-    paddingBottom} = animationSpecs;
+    paddingBottom, bend, rotate} = animationSpecs;
 
   const p0 = padding ? padding : 0;
   const pl = paddingLeft ? paddingLeft : p0;
@@ -127,11 +127,14 @@ function generatePath(toAnimateDim, toAvoidDim, animationSpecs) {
   const pb = paddingBottom ? paddingBottom : p0;
 
   const pads = {pl, pt, pr, pb};
-  const corners = getCorners(direction, toAnimateDim, toAvoidDim, pads);
+  // 'none' is animationSpecs.rotate
+  const borders = getBorders(toAnimateDim, toAvoidDim, pads, 'none');
+
   // evacuate points
-  // console.log(corners);
-  let startQuad = getQuadrant(start, direction, toAnimateDim, toAvoidDim, pads);
-  const endQuad = getQuadrant(end, direction, toAnimateDim, toAvoidDim, pads);
+  let startQuad = getQuadrant(start, direction, borders);
+  const endQuad = getQuadrant(end, direction, borders);
+
+  const corners = getCorners(direction, borders);
 
   if (startQuad < 0) {
     console.error(`Seui2: The start point: (${start.x}, ${start.y}) provided is invalid.`);
@@ -142,16 +145,17 @@ function generatePath(toAnimateDim, toAvoidDim, animationSpecs) {
     return 'm 0 0';
   }
 
-  console.log(start, end, startQuad, endQuad);
+  console.log(startQuad, endQuad);
+
+  // Easy path, if same quadrant and the start point is "before" the end point
+  if (startQuad === endQuad) {
+    const possiblePath = sameQuadPath(startQuad, direction, start, end);
+    console.log(possiblePath);
+    if (possiblePath) return possiblePath;
+  }
 
   let path = `m ${start.x} ${start.y} `;
   if (direction.localeCompare('clockwise') == 0) {
-
-    // Easy path, if same quadrant
-    if (startQuad === endQuad) {
-      const possiblePath = sameQuadPath(startQuad, 'clockwise', start, end);
-      if (possiblePath) return possiblePath;
-    }
 
     // Start with a path to the first corner
     if (startQuad % 2 === 0) {
@@ -167,18 +171,38 @@ function generatePath(toAnimateDim, toAvoidDim, animationSpecs) {
 
     // Go around the shape to avoid
     while (startQuad !== endQuad) {
+      // switch (startQuad) {
+      //   case 0:
+      //     path += `h ${corners[0].x - corners[3].x} `;
+      //     break;
+      //   case 1:
+      //     path += `v ${corners[1].y - corners[0].y} `;
+      //     break;
+      //   case 2:
+      //     path += `h ${corners[2].x - corners[1].x} `;
+      //     break;
+      //   case 3:
+      //     path += `v ${corners[3].y - corners[2].y} `;
+      //     break;
+      //   default:
+      //     break;
+      // }
       switch (startQuad) {
         case 0:
-          path += `h ${corners[0].x - corners[3].x} `;
+          path += `q ${(corners[0].x - corners[3].x)/2} ${-bend} \
+          ${corners[0].x - corners[3].x}  ${corners[0].y - corners[3].y} `;
           break;
         case 1:
-          path += `v ${corners[1].y - corners[0].y} `;
+          path += `q ${bend} ${(corners[1].y - corners[0].y)/2} \
+          ${corners[1].x - corners[0].x}  ${corners[1].y - corners[0].y} `;
           break;
         case 2:
-          path += `h ${corners[2].x - corners[1].x} `;
+          path += `q ${(corners[2].x - corners[1].x)/2} ${bend} \
+          ${corners[2].x - corners[1].x}  ${corners[2].y - corners[1].y} `;
           break;
         case 3:
-          path += `v ${corners[3].y - corners[2].y} `;
+          path += `q ${-bend} ${(corners[3].y - corners[2].y)/2} \
+          ${corners[3].x - corners[2].x}  ${corners[3].y - corners[2].y} `;
           break;
         default:
           break;
@@ -202,116 +226,191 @@ function generatePath(toAnimateDim, toAvoidDim, animationSpecs) {
     // h ${avW} q ${padding} 0 ${padding} ${-padding} v ${anY - avY - avH}`;
   }
 
-  else
-    path = path + ` m 0 0 v ${avY + avH - anY} q 0 ${padding} ${avX + avW - anX} ${padding}
-    h ${-avW - anW} q ${-padding} 0 ${-padding} ${-padding} v ${anY - avY - avH}`
+  else {
+    // Start with a path to the first corner
+    if (startQuad % 2 === 0) {
+      // top or bottom quadrant
+      path += `q ${corners[startQuad].x - start.x} 0\
+        ${corners[startQuad].x - start.x} ${corners[startQuad].y - start.y} `;
+    } else {
+      // left or right quadrant
+      path += `q 0 ${corners[startQuad].y - start.y}\
+        ${corners[startQuad].x - start.x} ${corners[startQuad].y - start.y} `;
+    }
+    startQuad = (startQuad + 1) % 4;
 
+    // Go around the shape to avoid
+    while (startQuad !== endQuad) {
+
+      switch (startQuad) {
+        case 0:
+          path += `q ${(corners[0].x - corners[3].x)/2} ${-bend} \
+          ${corners[0].x - corners[3].x}  ${corners[0].y - corners[3].y} `;
+          break;
+        case 1:
+          path += `q ${-bend} ${(corners[1].y - corners[0].y)/2} \
+          ${corners[1].x - corners[0].x}  ${corners[1].y - corners[0].y} `;
+          break;
+        case 2:
+          path += `q ${(corners[2].x - corners[1].x)/2} ${bend} \
+          ${corners[2].x - corners[1].x}  ${corners[2].y - corners[1].y} `;
+          break;
+        case 3:
+          path += `q ${bend} ${(corners[3].y - corners[2].y)/2} \
+          ${corners[3].x - corners[2].x}  ${corners[3].y - corners[2].y} `;
+          break;
+        default:
+          break;
+      }
+      startQuad = (startQuad + 1) % 4;
+    }
+
+    // End with path to end point
+    const cornerBefore = corners[(endQuad + 3) % 4];
+    if (endQuad % 2 === 0) {
+      // top or bottom quadrant
+      path += `q 0 ${end.y - cornerBefore.y}\
+        ${end.x - cornerBefore.x} ${end.y - cornerBefore.y}`;
+    } else {
+      // left or right quadrant
+      path += `q ${end.x - cornerBefore.x} 0\
+        ${end.x - cornerBefore.x} ${end.y - cornerBefore.y}`;
+    }
+    // path = path + ` m 0 0 v ${avY + avH - anY} q 0 ${padding} ${avX + avW - anX} ${padding}
+    // h ${-avW - anW} q ${-padding} 0 ${-padding} ${-padding} v ${anY - avY - avH}`
+  }
   return path;
 }
 
-function getQuadrant(point, direction, toAnimateDim, toAvoidDim, pads) {
-  const {x, y} = point;
+function getBorders(toAnimateDim, toAvoidDim, pads, rotate) {
   const {width: anW, height: anH} = toAnimateDim;
   const {x: avX, y: avY, width: avW, height: avH} = toAvoidDim;
   const {pl, pt, pr, pb} = pads;
 
-  /*
-    counter clockwise
+  if (rotate.localeCompare('auto') == 0) {
+    const origin = {x: anW, y: anH/2};
+    const anPadding = anW / 2;
 
-  */
-  // Return the quadrant the point is in relative
-  // to the avoid dimensions and padding
-  // console.log('direction', direction);
+    return {
+      left: avX - pl - anPadding,
+      top: avY - pt - anPadding,
+      right: avX + avW + pr + anPadding,
+      bottom: avY + avH + pb + anPadding
+    };
+  }
+
+  // origin: (0, 0)
+  // anLeftPadding = anW, anTopPadding = anH
+  // anRightPadding = 0, anBottomPadding = 0
+  return {
+    left: avX - pl - anW,
+    top: avY - pt - anH,
+    right: avX + avW + pr,
+    bottom: avY + avH + pb,
+  };
+}
+
+function getCorners(direction, borders) {
+  if (direction.localeCompare('clockwise') === 0) {
+    return [
+      {x: borders.right, y: borders.top},
+      {x: borders.right, y: borders.bottom},
+      {x: borders.left, y: borders.bottom},
+      {x: borders.left, y: borders.top},
+    ];
+  }
+  return [
+    {x: borders.left, y: borders.top},
+    {x: borders.left, y: borders.bottom},
+    {x: borders.right, y: borders.bottom},
+    {x: borders.right, y: borders.top},
+  ];
+}
+
+function getQuadrant(point, direction, borders) {
+  const {x, y} = point;
+
   if (direction.localeCompare('clockwise') == 0) {
-    // console.log('in clockwise');
     /*
       clockwise
       ___0_|
       3|___|__1
        | 2
     */
-    if (x <= avX + avW + pr && y <= avY - anH - pt) {
+    if (x <= borders.right && y <= borders.top)
       return 0;
-    } else if (x >= avX + avW + pr && y <= avY + avH + pb){
+    else if (x >= borders.right && y <= borders.bottom)
       return 1;
-    } else if (x >= avX - anW - pl && y >= avY + avH + pb) {
+    else if (x >= borders.left && y >= borders.bottom)
       return 2;
-    } else if (x <= avX - anW - pl && y >= avY - anH - pt) {
+    else if (x <= borders.left && y >= borders.top)
       return 3;
-    }
   }
+
+  /*
+    counterclockwise
+      |_0____
+   _1_|___| 3
+       2 |
+  */
+  console.log(borders);
+  if (x >= borders.left && y <= borders.top)
+    return 0;
+  else if (x <= borders.left && y <= borders.bottom)
+    return 1;
+  else if (x <= borders.right && y >= borders.bottom)
+    return 2;
+  else if (x >= borders.right && y >= borders.top)
+    return 3;
 
   return -1;
 }
 
-function getCorners(direction, toAnimateDim, toAvoidDim, pads) {
-  const {width: anW, height: anH} = toAnimateDim;
-  const {x: avX, y: avY, width: avW, height: avH} = toAvoidDim;
-  const {pl, pt, pr, pb} = pads;
 
-  // if (direction === 'clockwise') {
-    return [{x: avX + avW + pr, y: avY - anH - pt},
-      {x: avX + avW + pr, y: avY + avH + pb},
-      {x: avX - anW - pl, y: avY + avH + pb},
-      {x: avX - anW - pl, y: avY - anH - pt}];
 
-  // }
-}
+function sameQuadPath(quadrant, direction, start, end) {
+  let path = `m ${start.x} ${start.y} `;
+  const anchorHorizontal = `q ${end.x - start.x} 0 `;
+  const anchorVertical = `q 0 ${end.y - start.y} `;
 
-function sameQuadPath(quad, direction, start, end) {
-  switch (quad) {
-    case 0:
-      if (start.x <= end.x) {
-        if (start.y <= end.y) {
-          return `m ${start.x} ${start.y} q ${end.x - start.x} 0
-          ${end.x - start.x} ${end.y - start.y}`;
-        } else {
-          return `m ${start.x} ${start.y} q 0 ${end.y - start.y}
-          ${end.x - start.x} ${end.y - start.y}`;
-        }
-      }
-      break;
-    case 1:
-      if (start.y <= end.y) {
-        if (start.x <= end.x) {
-          return `m ${start.x} ${start.y} q ${end.x - start.x} 0
-          ${end.x - start.x} ${end.y - start.y}`;
-        } else {
-          return `m ${start.x} ${start.y} q 0 ${end.y - start.y}
-          ${end.x - start.x} ${end.y - start.y}`;
-        }
-      }
-      break;
-    case 2:
-      if (start.x >= end.x) {
-        if (start.y >= end.y) {
-          return `m ${start.x} ${start.y} q ${end.x - start.x} 0
-          ${end.x - start.x} ${end.y - start.y}`;
-        } else {
-          return `m ${start.x} ${start.y} q 0 ${end.y - start.y}
-          ${end.x - start.x} ${end.y - start.y}`;
-        }
-      }
-      break;
-    case 3:
-      if (start.y >= end.y) {
-        if (start.x >= end.x) {
-          return `m ${start.x} ${start.y} q ${end.x - start.x} 0
-          ${end.x - start.x} ${end.y - start.y}`;
-        } else {
-          return `m ${start.x} ${start.y} q 0 ${end.y - start.y}
-          ${end.x - start.x} ${end.y - start.y}`;
-        }
-      }
-      break;
-    default:
-      break;
+  if (direction.localeCompare('clockwise') == 0) {
+    if (quadrant == 0 && start.x <= end.x) {
+      if (start.y <= end.y) path += anchorHorizontal;
+      else path += anchorVertical;
+    } else if (quadrant == 1 && start.y <= end.y) {
+      if (start.x <= end.x) path += anchorHorizontal;
+      else path += anchorVertical;
+    } else if (quadrant == 2 && start.x >= end.x) {
+      if (start.y >= end.y) path += anchorHorizontal;
+      else path += anchorVertical;
+    } else if (quadrant == 3 && start.y >= end.y) {
+      if (start.x >= end.x) path += anchorHorizontal;
+      else path += anchorVertical;
+    } else {
+      return null;
+    }
+  } else { // counterclockwise
+    if (quadrant == 0 && start.x >= end.x) {
+      if (start.y <= end.y) path += anchorHorizontal;
+      else path += anchorVertical;
+    } else if (quadrant == 1 && start.y <= end.y) {
+      if (start.x >= end.x) path += anchorHorizontal;
+      else path += anchorVertical;
+    } else if (quadrant == 2 && start.x <= end.x) {
+      if (start.y >= end.y) path += anchorHorizontal;
+      else path += anchorVertical;
+    } else if (quadrant == 3 && start.y >= end.y) {
+      if (start.x <= end.x) path += anchorHorizontal;
+      else path += anchorVertical;
+    } else {
+      return null;
+    }
   }
 
-  return null;
+  return path + `${end.x - start.x} ${end.y - start.y}`;
 }
 
-function setOrigin(toAnimateNode) {
+function setOrigin(toAnimateNode, x, y) {
   toAnimateNode.setAttribute('x', 0);
   toAnimateNode.setAttribute('y', 0);
 }
