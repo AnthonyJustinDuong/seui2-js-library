@@ -29,10 +29,24 @@ function Seui(svgSpecifier, toAnimate, animationsSpecs, defaultSpecs) {
   }
   _self.animationsSpecs = animationsSpecs;
   _self.animationCounter = 0;
-  _self.updateAnimation = () => {
-    removeAnimation(_self, _self.animationCounter);
-    createAndAppendAnimation(_self, _self.animationCounter);
+
+  // Functions for the user
+  _self.addAnimation = (spec, index) => {
+    _self.animationsSpecs.splice(index, 0, spec);
   }
+  _self.removeAnimation = index => {
+    return _self.animationsSpecs.splice(index, 1);
+  }
+  _self.setAnimationProperty = (index, propertyName, value) => {
+    _self.animationsSpecs[index][propertyName] = value;
+  }
+  _self.renderAnimation = () => {
+    const toRemove = _self.animate.querySelectorAll(`[id^=${seui2AnimateMotionId}]`);
+    for (let i = 0; i < toRemove.length; i++) {
+      toRemove[i].remove();
+    }
+    createAndAppendAnimation(_self, _self.animationCounter);
+  };
 
   createAndAppendAnimation(_self, 0);
   // createAndAppendAnimation(_self, 1);
@@ -64,15 +78,17 @@ function createAndAppendAnimation(_self, index) {
   }
 }
 
-function removeAnimation(_self, index) {
+function removeAnimation(_self, index, onEnd) {
   // may not need to reset position if current animation is being removed
-  // Adjust position of node to animate, for when removing the animation
-  if (_self.animationsSpecs[index].adjustedEnd) {
-    const { adjustedEnd: {x: x0, y: y0} } = _self.animationsSpecs[index];
-    setOrigin(_self.animate, x0, y0);
-  } else {
-    const { end: {x: x0, y: y0} } = _self.animationsSpecs[index];
-    setOrigin(_self.animate, x0, y0);
+  if (onEnd) {
+    // Adjust position of node to animate, for when removing the animation
+    if (_self.animationsSpecs[index].adjustedEnd) {
+      const { adjustedEnd: {x: x0, y: y0} } = _self.animationsSpecs[index];
+      setOrigin(_self.animate, x0, y0);
+    } else {
+      const { end: {x: x0, y: y0} } = _self.animationsSpecs[index];
+      setOrigin(_self.animate, x0, y0);
+    }
   }
 
   const nodeToRemove = _self.animate.querySelector(`#${seui2AnimateMotionId}${index}`);
@@ -80,7 +96,7 @@ function removeAnimation(_self, index) {
 }
 
 function appendNextAnimation(_self) {
-  removeAnimation(_self, _self.animationCounter);
+  removeAnimation(_self, _self.animationCounter, true);
   _self.animationCounter += 1;
   if (_self.animationCounter >= _self.animationsSpecs.length) _self.animationCounter = 0;
 
