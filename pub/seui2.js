@@ -35,21 +35,37 @@ function Seui(svgSpecifier, toAnimate, animationsSpecs, defaultSpecs) {
   }
 
   createAndAppendAnimation(_self, 0);
+  // createAndAppendAnimation(_self, 1);
 
   return _self;
 }
 
 function createAndAppendAnimation(_self, index) {
-  const specifications = getFullSpecs(_self, index);
-  const animateMotion = createMotionAnimation(_self.animate, specifications);
+  // If this animation has not yet been created
+  if (!_self.svg.querySelector('#' + seui2AnimateMotionId + index)) {
+    const specifications = getFullSpecs(_self, index);
+    const animateMotion = createMotionAnimation(specifications);
+    animateMotion.addEventListener('beginEvent', () => setOrigin(_self.animate, 0, 0));
+    animateMotion.onend = () => appendNextAnimation(_self);
+    _self.animate.appendChild(animateMotion);
+  }
 
-  animateMotion.addEventListener('beginEvent', () => setOrigin(_self.animate, 0, 0));
-  animateMotion.onend = () => appendNextAnimation(_self);
-
-  _self.animate.appendChild(animateMotion);
+  // Check if the next animation starts at the end of this current one,
+  // If so, append the next animation alse
+  const nextIndex = index < _self.animationsSpecs.length - 1 ? index + 1 : 0;
+  const animSpecs = _self.animationsSpecs[nextIndex];
+  if (animSpecs.begin && animSpecs.begin.startsWith('.end')
+    || _self.defaultSpecs.begin && _self.defaultSpecs.begin.startsWith('.end'))
+  {
+    const nextAnimateMotion = createMotionAnimation(getFullSpecs(_self, nextIndex));
+    nextAnimateMotion.addEventListener('beginEvent', () => setOrigin(_self.animate, 0, 0));
+    nextAnimateMotion.onend = () => appendNextAnimation(_self);
+    _self.animate.appendChild(nextAnimateMotion);
+  }
 }
 
 function removeAnimation(_self, index) {
+  // may not need to reset position if current animation is being removed
   // Adjust position of node to animate, for when removing the animation
   if (_self.animationsSpecs[index].adjustedEnd) {
     const { adjustedEnd: {x: x0, y: y0} } = _self.animationsSpecs[index];
@@ -59,7 +75,7 @@ function removeAnimation(_self, index) {
     setOrigin(_self.animate, x0, y0);
   }
 
-  const nodeToRemove = _self.animate.querySelector(`#${seui2AnimateMotionId}`);
+  const nodeToRemove = _self.animate.querySelector(`#${seui2AnimateMotionId}${index}`);
   nodeToRemove.remove();
 }
 
@@ -67,27 +83,33 @@ function appendNextAnimation(_self) {
   removeAnimation(_self, _self.animationCounter);
   _self.animationCounter += 1;
   if (_self.animationCounter >= _self.animationsSpecs.length) _self.animationCounter = 0;
+
   createAndAppendAnimation(_self, _self.animationCounter);
 }
 
-function createMotionAnimation(toAnimateNode, specs) {
-  // const {width: {animVal: {value: anW}}, height: {animVal: {value: anH}}} = toAnimateNode;
-  // const toAnimateDim = {width: anW, height: anH};
+function createMotionAnimation(specs) {
   const path = generatePath(specs);
+  const dummyPathNode = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  dummyPathNode.setAttribute('d', path);
+  const dur = dummyPathNode.getTotalLength()/500;
 
-  let animMotion = document.createElementNS("http://www.w3.org/2000/svg", "animateMotion");
+  const animMotion = document.createElementNS("http://www.w3.org/2000/svg", "animateMotion");
 
-  animMotion.setAttribute('id', seui2AnimateMotionId);
+  animMotion.setAttribute('id', specs.id);
   // animMotion.setAttribute('href', animateId);
   animMotion.setAttribute('path', path);
-  animMotion.setAttribute('dur', '2s')
+  animMotion.setAttribute('dur', dur + 's')
   animMotion.setAttribute('repeatCount', '1');
   animMotion.setAttribute('begin', specs.begin);
   animMotion.setAttribute('fill', 'freeze');
-  // animMotion.setAttribute('rotate', 'auto-reverse');
   // animMotion.beginElement();
 
   return animMotion;
+}
+
+function setOrigin(toAnimateNode, x, y) {
+  toAnimateNode.setAttribute('x', x);
+  toAnimateNode.setAttribute('y', y);
 }
 
 /*
@@ -101,7 +123,7 @@ function getFullSpecs(_self, index) {
   const specific = _self.animationsSpecs[index];
   const defaultSpecs = _self.defaultSpecs;
   const previous = index > 0 ? _self.animationsSpecs[index - 1] : {};
-  const next = index < _self.animationsSpecs - 1 ? _self.animationsSpecs[index + 1] : {};
+  const next = index < _self.animationsSpecs.length - 1 ? _self.animationsSpecs[index + 1] : {};
 
   if (specific.avoid) fullSpecs.avoid = specific.avoid;
   else fullSpecs.avoid = defaultSpecs.avoid;
@@ -137,6 +159,13 @@ function getFullSpecs(_self, index) {
   if (specific.begin) fullSpecs.begin = specific.begin;
   else if (defaultSpecs.begin) fullSpecs.begin = defaultSpecs.begin;
   else fullSpecs.begin = 'click';
+  // For begin relative to previous animation
+  if (fullSpecs.begin.startsWith('.end')) {
+    const prevIndex = index > 0 ? index - 1 : _self.animationsSpecs.length - 1;
+    fullSpecs.begin = seui2AnimateMotionId + prevIndex + fullSpecs.begin;
+  }
+
+  fullSpecs.id = seui2AnimateMotionId + index;
 
   // Change specs by adjusting start and end points
   const toAvoid = _self.svg.querySelector(fullSpecs.avoid);
@@ -152,8 +181,7 @@ function getFullSpecs(_self, index) {
     const pads = {pt: fullSpecs.paddingTop, pr: fullSpecs.paddingRight,
       pb: fullSpecs.paddingBottom, pl: fullSpecs.paddingLeft}
 
-    // 'none' is animationSpecs.rotate
-    const borders = getBorders(toAnimateDim, toAvoidDim, pads, 'none');
+    const borders = getBorders(toAnimateDim, toAvoidDim, pads);
     fullSpecs.borders = borders;
 
     // Evacuaute points - to handle case where points are in the area to avoid
@@ -169,17 +197,15 @@ function getFullSpecs(_self, index) {
 }
 
 function generatePath(specs) {
-  const {avoid, toAvoidDim, start, end, direction, borders, bend} = specs;
+  const {start, end, direction, borders, bend} = specs;
 
   const startOctant = getOctant(start, borders);
   const endOct = getOctant(end, borders);
-
   const corners = getCorners(borders);
-
   const ccw = /^\s*(anti|counter)[\s|-]?clockwise\s*$/.test(direction);
 
   const {incr, cont, edgePath, directPath, sameOctPath, getNearestCorner}
-    = getCCWExpressions(ccw, bend , borders);
+    = getCCWExpressions(ccw, bend, borders);
 
   // Easy path, if same octant and the adjustedStart point is "before" the end point
   if (startOctant === endOct) {
@@ -201,6 +227,7 @@ function generatePath(specs) {
   path += directPath(start, corners[next]);
 
   // Add edge paths until end is "in sight" (a "direct" path is available)
+  // Moving around the element to avoid
   let corner = next;
   while (cont(corner, endOct)) {
     path += edgePath(corner);
@@ -213,26 +240,11 @@ function generatePath(specs) {
   return path;
 }
 
-function getBorders(toAnimateDim, toAvoidDim, pads, rotate) {
+function getBorders(toAnimateDim, toAvoidDim, pads) {
   const {width: anW, height: anH} = toAnimateDim;
   const {x: avX, y: avY, width: avW, height: avH} = toAvoidDim;
   const {pt, pr, pb, pl} = pads;
 
-  if (rotate.localeCompare('auto') == 0) {
-    const origin = {x: anW, y: anH/2};
-    const anPadding = anW / 2;
-
-    return {
-      left: avX - pl - anPadding,
-      top: avY - pt - anPadding,
-      right: avX + avW + pr + anPadding,
-      bottom: avY + avH + pb + anPadding
-    };
-  }
-
-  // origin: (0, 0)
-  // anLeftPadding = anW, anTopPadding = anH
-  // anRightPadding = 0, anBottomPadding = 0
   return {
     left: avX - pl - anW,
     top: avY - pt - anH,
@@ -360,12 +372,7 @@ function evacuatePoint(point, borders) {
       return {x: point.x, y: borders.top};
     case difMaxY:
       return {x: point.x, y: borders.bottom};
-    defaultSpecs:
+    default:
       return point;
   }
-}
-
-function setOrigin(toAnimateNode, x, y) {
-  toAnimateNode.setAttribute('x', x);
-  toAnimateNode.setAttribute('y', y);
 }
