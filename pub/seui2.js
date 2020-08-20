@@ -30,7 +30,7 @@ function Seui(svgSpecifier, toAnimate, animationsSpecs, defaultSpecs) {
   _self.animationsSpecs = animationsSpecs;
   _self.animationCounter = 0;
 
-  // Functions for the user
+  // Functions for the user to set properties
   _self.addAnimation = (spec, index) => {
     _self.animationsSpecs.splice(index, 0, spec);
   }
@@ -39,6 +39,13 @@ function Seui(svgSpecifier, toAnimate, animationsSpecs, defaultSpecs) {
   }
   _self.setAnimationProperty = (index, propertyName, value) => {
     _self.animationsSpecs[index][propertyName] = value;
+  }
+  _self.setDefaultProperty = (propertyName, value) => {
+    _self.defaultSpecs[propertyName] = value;
+  }
+  _self.setCounter = value => {
+    _self.animationCounter = value;
+    _self.renderAnimation();
   }
   _self.renderAnimation = () => {
     const toRemove = _self.animate.querySelectorAll(`[id^=${seui2AnimateMotionId}]`);
@@ -49,7 +56,6 @@ function Seui(svgSpecifier, toAnimate, animationsSpecs, defaultSpecs) {
   };
 
   createAndAppendAnimation(_self, 0);
-  // createAndAppendAnimation(_self, 1);
 
   return _self;
 }
@@ -79,7 +85,7 @@ function createAndAppendAnimation(_self, index) {
 }
 
 function removeAnimation(_self, index, onEnd) {
-  // may not need to reset position if current animation is being removed
+  // Only need to reset position, if the animation being removed is at its end
   if (onEnd) {
     // Adjust position of node to animate, for when removing the animation
     if (_self.animationsSpecs[index].adjustedEnd) {
@@ -105,20 +111,30 @@ function appendNextAnimation(_self) {
 
 function createMotionAnimation(specs) {
   const path = generatePath(specs);
-  const dummyPathNode = document.createElementNS("http://www.w3.org/2000/svg", "path");
-  dummyPathNode.setAttribute('d', path);
-  const dur = dummyPathNode.getTotalLength()/500;
+
+  let dur = specs.dur;
+  if (!dur) {
+    const dummyPathNode = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    dummyPathNode.setAttribute('d', path);
+    dur = (dummyPathNode.getTotalLength() / specs.speed) + 's';
+  }
 
   const animMotion = document.createElementNS("http://www.w3.org/2000/svg", "animateMotion");
 
   animMotion.setAttribute('id', specs.id);
-  // animMotion.setAttribute('href', animateId);
   animMotion.setAttribute('path', path);
-  animMotion.setAttribute('dur', dur + 's')
+  animMotion.setAttribute('dur', dur)
   animMotion.setAttribute('repeatCount', '1');
   animMotion.setAttribute('begin', specs.begin);
   animMotion.setAttribute('fill', 'freeze');
-  // animMotion.beginElement();
+
+  // Other animation attributes
+  const attributes = ['min', 'max', 'restart', 'repeatCount', 'repeatDur',
+  'calcMode', 'values', 'keySplines', 'keyTimes', 'from', 'to', 'by'];
+  attributes.map(attr => {
+    if (specs[attr]) animMotion.setAttribute(attr, specs[attr]);
+  })
+  if (specs['endAnimation']) animMotion.setAttribute('end', specs['endAnimation']);
 
   return animMotion;
 }
@@ -182,6 +198,22 @@ function getFullSpecs(_self, index) {
   }
 
   fullSpecs.id = seui2AnimateMotionId + index;
+
+  if (specific.dur) fullSpecs.dur = specific.dur;
+  else if (specific.speed) fullSpecs.speed = specific.speed;
+  else if (defaultSpecs.dur) fullSpecs.dur = defaultSpecs.dur;
+  else if (defaultSpecs.speed) fullSpecs.speed = defaultSpecs.speed;
+  else fullSpecs.dur = '1s';
+
+  // Other animation attributes
+  const attributes = ['min', 'max', 'restart', 'repeatCount', 'repeatDur',
+    'calcMode', 'values', 'keyTimes', 'keySplines', 'from', 'to', 'by'];
+  attributes.map(attr => {
+    if (specific[attr]) fullSpecs[attr] = specific[attr];
+    else if (defaultSpecs[attr]) fullSpecs[attr] = defaultSpecs[attr];
+  })
+  if (specific['endAnimation']) fullSpecs['endAnimation'] = specific['endAnimation'];
+  else if (defaultSpecs['endAnimation']) fullSpecs['endAnimation'] = defaultSpecs['endAnimation'];
 
   // Change specs by adjusting start and end points
   const toAvoid = _self.svg.querySelector(fullSpecs.avoid);
@@ -297,6 +329,7 @@ function getOctant(point, borders) {
   return 7;
 }
 
+/* Get appropriate functions based on the direction */
 function getCCWExpressions(ccw, bend, borders) {
   return (ccw ?
     {
@@ -368,6 +401,7 @@ function getCCWExpressions(ccw, bend, borders) {
   );
 }
 
+/* Calculates a point that is outside of the borders */
 function evacuatePoint(point, borders) {
   if (point.x <= borders.left || borders.right <= point.x ||
     point.y <= borders.top || borders.bottom <= point.y) return point;
