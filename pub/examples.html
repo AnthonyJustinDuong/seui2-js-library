@@ -6,6 +6,7 @@
     <link rel="stylesheet" type="text/css" href="css/app.css"></link>
     <link rel="stylesheet" type="text/css" href="css/examples.css"></link>
     <link rel="stylesheet" type="text/css" href="css/header.css"></link>
+    <link rel="stylesheet" type="text/css" href="css/solarized.css"></link>
     <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
@@ -17,21 +18,18 @@
   <body>
     <header id="main-header"></header>
     <div id="main-column-examples">
-      <div id="libDesc">
-        <h1>Seui2 JS Library</h1>
-        <p>Making animations flow.</p>
-      </div>
-      <div id="badExample">
+    <h1>Examples</h1>
+      <div id="bad-example">
         <h2>The Problem</h2>
         <p>We do not want web elements to overlap each other during animations.</p>
         <svg width="1066" height="447">
-          <image id="badExMain"
+          <image
             href="images/derek-thomson-TWoL-QCZubY-unsplash.jpg"
             x="213" y="10"
             width="640" height="427"
           >
           </image>
-          <image id="badExRat"
+          <image
             href="images/evgeny-karchevsky-k1tUxfs8JYY-unsplash.jpg"
             x="43" y="100"
             width="160" height="213"
@@ -41,8 +39,8 @@
               dur="10s"
               repeatCount="indefinite"
               calcMode="linear"
-              keyTimes="0; 0.2; 0.25; 0.45; 0.5; 0.7; 0.75; 0.95; 1"
-              keyPoints="0; 0; 0.1; 0.4; 0.5; 0.5; 0.6; 0.9; 1"
+              keyTimes="0; 0.4; 0.5; 0.9; 1"
+              keyPoints="0; 0.5; 0.5; 1; 1"
             >
             </animateMotion>
           </image>
@@ -50,15 +48,26 @@
       </div>
       <div id="example1">
         <h2>Example 1</h2>
+        <p>Using the Seui2 library, you can avoid the element like so.</p>
+        <div class="code-segment">
+          <pre><code> <span class="blue">Seui</span>(<span class="cyan">'#example1 svg'</span>, <span class="cyan">'ex1-animate'</span>, [
+    {
+      avoid: <span class="cyan">'#ex1-avoid'</span>,
+      start: {x: <span class="red">873</span>, y: <span class="red">100</span>},
+      end: {x: <span class="red">33</span>, y: <span class="red">100</span>},
+    },
+  ]);</code></pre>
+        </div>
+        <p>Go <a href="/api.html#getting-started">here</a> to see an explanation and get started.</p>
         <p>Click the smaller picture to animate it.</p>
         <svg width="1066" height="670">
-          <image id="ex1Main"
+          <image id="ex1-avoid"
             href="images/derek-thomson-TWoL-QCZubY-unsplash.jpg"
             x="213" y="10"
             width="640" height="427"
           >
           </image>
-          <image id="ex1Rat"
+          <image id="ex1-animate"
             href="images/evgeny-karchevsky-k1tUxfs8JYY-unsplash.jpg"
             x="873" y="100"
             width="160" height="213"
@@ -68,32 +77,71 @@
           </image>
         </svg>
       </div>
-      <div id="interactiveExample">
-        <h2>Example 2</h2>
-        <p>Try setting different values for the width and the height of the element to avoid.
+      <div id="interactive-example">
+        <h2>Interactive Example</h2>
+        <p>In the example below, you can set the start and end position for the
+          element to animate. Where the coordinates specify the top-left corner
+          of the object. This is the same for the position of the element to avoid.
+          You can also change the width and height of both.
           The library will take this into account and generate the new path.
-          Click the picture to animate it.
+          Click the blue rectangle to animate it.
         </p>
-        <form id="changeDimForm">
-          <label for="width">Width: </label>
-          <input id="widthInput" type="number" placeholder="640" name="width">
-          <label for="height">Height: </label>
-          <input id="heightInput" type="number" placeholder="427" name="height">
-          <button id="submit">Submit</button>
-        </form>
-        <svg width="1200" height="1000">
-          <rect id="ex2Main"
-            x="213" y="10"
-            width="640" height="427"
-            fill="blue";
+          <table id="table-form">
+            <tr>
+              <th colspan="6"><h3>Animate Properties</h3></th>
+              <th colspan="4"><h3>Avoid Properties</h3></th>
+            </tr>
+            <tr>
+              <th colspan="2">Start</th>
+              <th colspan="2">Dimensions</th>
+              <th colspan="2">End</th>
+              <th colspan="2">Position</th>
+              <th colspan="2">Dimensions</th>
+            </tr>
+            <tr>
+              <th>x</th><th>y</th>
+              <th>width</th><th>height</th>
+              <th>x</th><th>y</th>
+              <th>x</th><th>y</th>
+              <th>width</th><th>height</th>
+            </tr>
+            <tr>
+              <td><input id="start-x" type="number" step="10" value=100></td>
+              <td><input id="start-y" type="number" step="10" value=100></td>
+              <td><input id="an-w" type="number" step="10" value=100></td>
+              <td><input id="an-h" type="number" step="10" value=100></td>
+              <td><input id="end-x" type="number" step="10" value=400></td>
+              <td><input id="end-y" type="number" step="10" value=400></td>
+              <td><input id="pos-x" type="number" step="10" value=300></td>
+              <td><input id="pos-y" type="number" step="10" value=200></td>
+              <td><input id="av-w" type="number" step="10" value=200></td>
+              <td><input id="av-h" type="number" step="10" value=200></td>
+            </tr>
+          </table>
+
+        <svg id="interactive__svg" width="1000" height="600">
+          <rect id="interactive__avoid"
+            x="300" y="200"
+            width="200" height="200"
+            rx="20" ry="20"
+            fill="rgb(255,64,0)"
           >
           </rect>
-          <image id="ex2Rat"
-            href="images/evgeny-karchevsky-k1tUxfs8JYY-unsplash.jpg"
-            x="43" y="100"
-            width="160" height="213"
+          <rect id="interactive__animate"
+            x="100" y="100"
+            width="100" height="100"
+            rx="20" ry="20"
+            fill="rgb(0,255,255)"
           >
-          </image>
+          </rect>
+          <circle id="anim-start"
+            cx="100" cy="100" r="10"
+            fill="rgb(0,255,0)"
+          ></circle>
+          <circle id="anim-end"
+            cx="400" cy="400" r="10"
+            fill="rgb(255,0,0)"
+          ></circle>
         </svg>
       </div>
     </div>

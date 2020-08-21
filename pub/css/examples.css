@@ -10,6 +10,7 @@ body {
 }
 #main-column-examples {
   width: 90%;
+  min-width: 1066px;
   padding: 55px 21px 55px 21px;
   box-shadow: 0px 0px 13px black;
   margin: 0px auto 0px auto;
@@ -17,19 +18,73 @@ body {
   background-color: white;
   /* background-color: rgba(0, 255, 255, 0.15); */
 }
-h1 {
-  text-align: center;
+#main-column-examples > div{
+  margin-bottom: 55px;
 }
-#libDesc {
+#main-column-examples h2 {
+  margin: 13px auto auto 34px;
+  color: rgb(0, 0, 255);
+}
+#main-column-examples p {
+  margin: 0px 34px 8px 34px;
+}
+#main-column-examples svg {
+  border-radius: 20px;
   margin: auto;
-  text-align: center;
+  display: block;
 }
-h2 {
-  margin-left: 55px;
+#main-column-examples .code-segment {
+  max-width: 90%;
+  min-width: 500px;
+  margin: 13px auto 8px 34px;
 }
-#badExample h2 {
-  color: red;
+#bad-example h2 {
+  color: rgb(255,64,0);
 }
-#badExample svg {
-  border: solid 1px red;
+#bad-example svg {
+  border: solid 1px rgb(255,64,0);
+}
+
+#example1 svg {
+  border-radius: 20px;
+  border: solid 1px rgb(0, 0, 255);
+}
+
+#interactive-example #table-form {
+  margin: auto;
+  min-width: 600px;
+  max-width: 900px;
+}
+#interactive-example #table-form input {
+  max-width: 100px;
+  min-width: 50px;
+  border-radius: 5px;
+  border: solid 1px black;
+}
+#interactive-example #table-form th {
+  min-width: 100px;
+  max-width: 200px;
+  border-right: solid 1px black;
+  border-left: solid 1px black;
+}
+#interactive-example svg {
+    border: solid 1px black;
+    margin: auto;
+  display: block;
+}
+#interactive-example #interactive__animate {
+  stroke: rgb(46, 230, 230);
+  stroke-width: 5px;
+}
+#interactive-example #interactive__avoid {
+  stroke: rgb(230, 92, 46);
+  stroke-width: 5px;
+}
+#interactive-example #anim-start {
+  stroke: black;
+  stroke-width: 1px;
+}
+#interactive-example #anim-end {
+  stroke: black;
+  stroke-width: 1px;
 }

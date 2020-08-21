@@ -14,8 +14,4 @@
         </div>`
   const oldHeader = document.body.querySelector('#main-header');
   document.body.replaceChild(newHeader, oldHeader);
-
-  // Append stylesheet
-  document.head.appendChild();
-  console.log("check did it execute");
 })();

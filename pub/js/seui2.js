@@ -69,7 +69,9 @@
       const specifications = getFullSpecs(_self, index);
       const animateMotion = createMotionAnimation(specifications);
       animateMotion.addEventListener('beginEvent', () => setOrigin(_self.animate, 0, 0));
-      animateMotion.onend = () => appendNextAnimation(_self);
+      animateMotion.onend = () => {
+        appendNextAnimation(_self)
+      };
       _self.animate.appendChild(animateMotion);
     }
 
@@ -152,10 +154,10 @@
     const defaultSpecs = _self.defaultSpecs;
     const previous = index > 0 ?
       _self.animationsSpecs[index - 1] :
-      _self.animationsSpecs[_self.animationsSpecs.length - 1];
+      {};
     const next = index < _self.animationsSpecs.length - 1 ?
       _self.animationsSpecs[index + 1] :
-      _self.animationsSpecs[0];
+      {};
 
     if (specific.avoid) fullSpecs.avoid = specific.avoid;
     else fullSpecs.avoid = defaultSpecs.avoid;

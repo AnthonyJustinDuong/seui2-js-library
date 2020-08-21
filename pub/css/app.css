@@ -4,3 +4,9 @@ body {
    rgba(0, 255, 255, 0.02) 55px, transparent 110px);
   background-attachment: fixed;
 }
+.code-segment {
+  padding-right: 8px;
+  border: solid 5px #eee8d5;
+  background-color: #fdf6e3;
+  font-size: 13pt;
+}
