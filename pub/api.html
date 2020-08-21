@@ -30,7 +30,7 @@
         <h2>Getting Started</h2>
         <div id="getting-started__step1">
           <h3>Step 1</h3>
-            <p>Add the library to your web page via a <code class="blue">script</code> tag.</p>
+            <p>Add the library to your web page via a <code><span class="blue">script</span></code> tag.</p>
             <div class="code-segment">
               <pre><code class="base01">
 <span class="new">  </span>&lt;<span class="blue">head</span>&gt;
@@ -125,18 +125,19 @@
             <h3>The Constructor</h3>
             <pre><code><span class="blue">Seui</span>(svgSpecifier, animateId, animationSpecifications, defaultSpecifications)</code></pre>
             <ul>
-              <li><pre><code>svgSpecifier</code></pre> is a specifier for the SVG element to animate within.
+              <li><code>svgSpecifier</code> is a specifier for the SVG element to animate within.
               The first element to match the specifier will be selected.</li>
-              <li><pre><code>animateId</code></pre> is a string id for the element to be animated.</li>
-              <li><pre><code>animationSpecifications</code></pre> is a list of specification objects.
+              <li><code>animateId</code> is a string id for the element to be animated.</li>
+              <li><code>animationSpecifications</code> is a list of specification objects.
               Each object contains animation options, a detailed list can be found <a href="#specs">below</a>.
               Each specification object corresponds to one generated animation.
               </li>
-              <li><pre><code>defaultSpecifications</code></pre> is a specification object.
+              <li><code>defaultSpecifications</code> is a specification object.
               If a value for an option is not specified in the animationSpecifications for a specific animation,
               the default value will be taken from here.
               </li>
             </ul>
+            <p>The constructor returns an instance of <code><span class="blue">Seui</span></code>.</p>
           </section>
           <section id="specs">
             <h3>Specification Options</h3>
@@ -248,10 +249,55 @@ from, to, by</code></pre></td>
           </section>
           <section id="methods">
             <h3>Methods & API</h3>
-            <p>Once you have an instance of Seui, you have access to several properties and methods.</p>
+            <p>Once you have an instance of Seui, you have access to several properties and methods.
+            In the example below, you may access these through <code><span class="orange">animator</span></code>.</p>
             <div class="code-segment">
-              <pre><code><span class="green">const</span> <span class="orange">animator</span> = <span class="blue">Seui</span>(...)</code></pre>
+              <pre><code><span class="green">const</span> <span class="orange">animator</span> = <span class="blue">Seui</span>(...)
+<span class="base1">// example method call</span>
+<span class="orange">animator</span>.<span class="blue">setCounter</span>(<span class="red">2</span>);
+<span class="base1">// example access property</span>
+<span class="green">console</span>.<span class="blue">log</span>(<span class="orange">animator</span>.animationsCounter); <span class="base1">//2</span></code></pre>
             </div>
+            <table id="methods-table">
+              <tr>
+                <th>Methods</th><th>Description</th>
+              </tr>
+              <tr>
+                <td><pre><code><span class="blue">addAnimation</span>(spec, index)</pre></code></td>
+                <td>Adds an animation specified by the specification object, <code>spec</code>, to the animations list at <code>index</code>.</td>
+              </tr>
+              <tr>
+                <td><pre><code><span class="blue">setAnimationProperty</span>(index, propertyName, value)</pre></code></td>
+                <td>At the animation in the animations list at <code>index</code>, sets the property named <code>propertyName</code> to the value <code>value</code>.</td>
+              </tr>
+              <tr>
+                <td><pre><code><span class="blue">setDefaultProperty</span>(propertyName, value)</pre></code></td>
+                <td>Sets the property named <code>propertyName</code> to the value <code>value</code> in the default specification object.</td>
+              </tr>
+              <tr>
+                <td><pre><code><span class="blue">setCounter</span>(value)</pre></code></td>
+                <td>Sets the animation to the <code>value</code>-th animation in the list.</td>
+              </tr>
+              <tr>
+                <td><pre><code><span class="blue">renderAnimation</span>()</pre></code></td>
+                <td>Updates the current animation, if any specification properties have changed.</td>
+              </tr>
+              <tr>
+                <th>Properties</th><th>Description</th>
+              </tr>
+              <tr>
+                <td><pre><code>animationsSpecs</pre></code></td>
+                <td>The list of animation specifications.</td>
+              </tr>
+              <tr>
+                <td><pre><code>defaultSpecs</pre></code></td>
+                <td>The default specifications.</td>
+              </tr>
+              <tr>
+                <td><pre><code>animationCounter</pre></code></td>
+                <td>The counter for which animation <code><span class="blue">Seui</span></code> is on.</td>
+              </tr>
+            </table>
           </section>
         </section>
     </div>
