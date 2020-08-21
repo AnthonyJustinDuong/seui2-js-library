@@ -3,9 +3,10 @@ body {
 }
 #main-header {
   width: 100%;
+  min-width: 710;
   height: 55px;
-  background: linear-gradient(rgba(2, 247, 255, 1), rgba(2, 247, 255, 1) 61%,
-    rgba(2, 247, 255, 0));
+  background: linear-gradient(rgba(0, 255, 255, 1), rgba(0, 255, 255, 1) 61.8%,
+    rgba(0, 255, 255, 0));
 
   position: fixed;
   top: 0px;
@@ -27,20 +28,20 @@ body {
 }
 .main-nav ul li a {
   padding: 3px 34px 3px 34px;
-  border: solid 2px rgb(2, 120, 255);
+  border: solid 2px rgb(0, 0, 255);
   border-radius: 13px;
   margin: 3px 8px 0px 8px;
 
-  /* rgb(2, 255, 137); */
-  /* rgb(2, 247, 255); */
-  /* rgb(2, 120, 255); */
+  /* rgb(0, 255, 0); */
+  /* rgb(0, 255, 255); */
+  /* rgb(0, 0, 255); */
   /* rgb(230, 184, 184); */
   text-decoration: none;
   font-weight: bold;
-  color: rgb(2, 120, 255);
+  color: rgb(0, 0, 255);
   transition: 1.5s;
 }
 .main-nav ul li a:hover {
-  color: rgb(2, 247, 255);
-  background-color: rgb(2, 120, 255);
+  color: rgb(0, 255, 255);
+  background-color: rgb(0, 0, 255);
 }

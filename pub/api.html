@@ -10,6 +10,20 @@
   </head>
   <body>
     <header id="main-header"></header>
+    <div id="side-column-api">
+      <nav>
+        <ul>
+          <li><a href="#getting-started">Getting Started</a></li>
+          <li><a href="#documentation">Documentation</a>
+            <ul>
+              <li><a href="#constructor">The Constructor</a></li>
+              <li><a href="#specs">Specification Options</a></li>
+              <li><a href="#methods">Methods</a></li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    </div>
     <div id="main-column-api">
       <h1>Seui2 API</h1>
       <section id="getting-started">
@@ -19,10 +33,10 @@
             <p>Add the library to your web page via a <code class="blue">script</code> tag.</p>
             <div class="code-segment">
               <pre><code class="base01">
-  &lt;<span class="blue">head</span>&gt;
-    &lt;<span class="blue">title</span>&gt;Seui2 Getting Started&lt;/<span class="blue">title</span>&gt;
-    &lt;<span class="blue">script</span> type=<span class="cyan">"text/javascript"</span> src=<span class="cyan">"seui2.js"</span>&gt;&lt;/<span class="blue">script</span>&gt;
-  &lt;/<span class="blue">head</span>&gt;
+<span class="new">  </span>&lt;<span class="blue">head</span>&gt;
+<span class="new">  </span>  &lt;<span class="blue">title</span>&gt;Seui2 Getting Started&lt;/<span class="blue">title</span>&gt;
+<span class="new">  </span>  &lt;<span class="blue">script</span> type=<span class="cyan">"text/javascript"</span> src=<span class="cyan">"seui2.js"</span>&gt;&lt;/<span class="blue">script</span>&gt;
+<span class="new">  </span>&lt;/<span class="blue">head</span>&gt;
               </code></pre>
             </div>
           </div>
@@ -31,10 +45,10 @@
             <p>Set up an SVG element. Give the SVG element an id. In the example below, the id is <code class="cyan">svgId</code>.</p>
             <div class="code-segment">
               <pre><code class="base01">
-  &lt;<span class="blue">body</span>&gt;
-    &lt;<span class="blue">svg</span> id=<span class="cyan">"svgId"</span> width=<span class="cyan">"500"</span> height=<span class="cyan">"500"</span>&gt;
-    &lt;/<span class="blue">svg</span>&gt;
-  &lt;/<span class="blue">body</span>&gt;
+<span class="new">  </span>&lt;<span class="blue">body</span>&gt;
+<span class="new">  </span>  &lt;<span class="blue">svg</span> id=<span class="cyan">"svgId"</span> width=<span class="cyan">"500"</span> height=<span class="cyan">"500"</span>&gt;
+<span class="new">  </span>  &lt;/<span class="blue">svg</span>&gt;
+<span class="new">  </span>&lt;/<span class="blue">body</span>&gt;
               </code></pre>
             </div>
           </div>
@@ -45,7 +59,9 @@
               <pre><code class="base01">
   &lt;<span class="blue">body</span>&gt;
     &lt;<span class="blue">svg</span> id=<span class="cyan">"svgId"</span> width=<span class="cyan">"500"</span> height=<span class="cyan">"500"</span>&gt;
-      &lt;<span class="blue">rect</span> id=<span class="cyan">"toAnimateId"</span> x=<span class="cyan">"50"</span> y=<span class="cyan">"100"</span> width=<span class="cyan">"50"</span> height=<span class="cyan">"50"</span>&gt;&lt;/<span class="blue">rect</span>&gt;
+<span class="new">  </span>    &lt;<span class="blue">rect</span> id=<span class="cyan">"toAnimateId"</span> x=<span class="cyan">"50"</span> y=<span class="cyan">"100"</span>
+<span class="new">  </span>      width=<span class="cyan">"50"</span> height=<span class="cyan">"50"</span>&gt;
+<span class="new">  </span>    &lt;/<span class="blue">rect</span>&gt;
     &lt;/<span class="blue">svg</span>&gt;
   &lt;/<span class="blue">body</span>&gt;
               </code></pre>
@@ -58,8 +74,12 @@
               <pre><code class="base01">
   &lt;<span class="blue">body</span>&gt;
     &lt;<span class="blue">svg</span> id=<span class="cyan">"svgId"</span> width=<span class="cyan">"500"</span> height=<span class="cyan">"500"</span>&gt;
-      &lt;<span class="blue">rect</span> id=<span class="cyan">"toAnimateId"</span> x=<span class="cyan">"50"</span> y=<span class="cyan">"100"</span> width=<span class="cyan">"50"</span> height=<span class="cyan">"50"</span>&gt;&lt;/<span class="blue">rect</span>&gt;
-      &lt;<span class="blue">rect</span> id=<span class="cyan">"toAvoidId"</span> x=<span class="cyan">"150"</span> y=<span class="cyan">"100"</span> width=<span class="cyan">"150"</span> height=<span class="cyan">"100"</span> style=<span class="cyan">"</span><span class="green">fill</span>:<span class="cyan">red"</span>&gt;&lt;/<span class="blue">rect</span>&gt;
+      &lt;<span class="blue">rect</span> id=<span class="cyan">"toAnimateId"</span> x=<span class="cyan">"50"</span> y=<span class="cyan">"100"</span>
+        width=<span class="cyan">"50"</span> height=<span class="cyan">"50"</span>&gt;
+      &lt;/<span class="blue">rect</span>&gt;
+<span class="new">  </span>    &lt;<span class="blue">rect</span> id=<span class="cyan">"toAvoidId"</span> x=<span class="cyan">"150"</span> y=<span class="cyan">"100"</span>
+<span class="new">  </span>      width=<span class="cyan">"150"</span> height=<span class="cyan">"100"</span> style=<span class="cyan">"</span><span class="green">fill</span>:<span class="cyan">red"</span>&gt;
+<span class="new">  </span>    &lt;/<span class="blue">rect</span>&gt;
     &lt;/<span class="blue">svg</span>&gt;
   &lt;/<span class="blue">body</span>&gt;
               </code></pre>
@@ -67,29 +87,33 @@
           </div>
           <div id="getting-started__step5">
             <h3>Step 5</h3>
-            <p>Instantiate a Seui object. The first argument is a specifier for the SVG element.
+            <p>Instantiate a Seui object. The first argument of the constructor is a specifier for the SVG element.
             The second argument is the id of the element to animate.
             The third argument is a list of animation specifications.
             In the example below, the animation specification contains the specifier to the element to avoid, the start point, the end point, and other specifications.
-            Please look here to see what options can be specified.</p>
+            Please look <a href="#specs">here</a> to see what options can be specified.</p>
             <div class="code-segment">
               <pre><code class="base01">
   &lt;<span class="blue">body</span>&gt;
     &lt;<span class="blue">svg</span> id=<span class="cyan">"svgId"</span> width=<span class="cyan">"500"</span> height=<span class="cyan">"500"</span>&gt;
-      &lt;<span class="blue">rect</span> id=<span class="cyan">"toAnimateId"</span> x=<span class="cyan">"50"</span> y=<span class="cyan">"100"</span> width=<span class="cyan">"50"</span> height=<span class="cyan">"50"</span>&gt;&lt;/<span class="blue">rect</span>&gt;
-      &lt;<span class="blue">rect</span> id=<span class="cyan">"toAvoidId"</span> x=<span class="cyan">"150"</span> y=<span class="cyan">"100"</span> width=<span class="cyan">"150"</span> height=<span class="cyan">"100"</span> style=<span class="cyan">"</span><span class="green">fill</span>:<span class="cyan">red"</span>&gt;&lt;/<span class="blue">rect</span>&gt;
+      &lt;<span class="blue">rect</span> id=<span class="cyan">"toAnimateId"</span> x=<span class="cyan">"50"</span> y=<span class="cyan">"100"</span>
+        width=<span class="cyan">"50"</span> height=<span class="cyan">"50"</span>&gt;
+      &lt;/<span class="blue">rect</span>&gt;
+      &lt;<span class="blue">rect</span> id=<span class="cyan">"toAvoidId"</span> x=<span class="cyan">"150"</span> y=<span class="cyan">"100"</span>
+        width=<span class="cyan">"150"</span> height=<span class="cyan">"100"</span> style=<span class="cyan">"</span><span class="green">fill</span>:<span class="cyan">red"</span>&gt;
+      &lt;/<span class="blue">rect</span>&gt;
     &lt;/<span class="blue">svg</span>&gt;
-    &lt;<span class="blue">script</span>&gt;
-      <span class="green">const</span> <span class="orange">animator</span> = <span class="blue">Seui</span>(<span class="cyan">"#svgId"</span>, <span class="cyan">"toAnimateId"</span>, <span class="blue">[
-        {</span>
-          avoid: <span class="cyan">"#toAvoidId"</span>,
-          start: {x: <span class="red">50</span>, y: <span class="red">100</span>},
-          end: {x: <span class="red">350</span>, y: <span class="red">150</span>},
-          direction: <span class="cyan">"counter-clockwise"</span>,
-          begin: <span class="cyan">"click"</span>
-        <span class="blue">}
-      ]</span>)
-    &lt;/<span class="blue">script</span>&gt;
+<span class="new">  </span>  &lt;<span class="blue">script</span>&gt;
+<span class="new">  </span>    <span class="green">const</span> <span class="orange">animator</span> = <span class="blue">Seui</span>(<span class="cyan">"#svgId"</span>, <span class="cyan">"toAnimateId"</span>, <span class="blue">[
+<span class="new">  </span>      {</span>
+<span class="new">  </span>        avoid: <span class="cyan">"#toAvoidId"</span>,
+<span class="new">  </span>        start: {x: <span class="red">50</span>, y: <span class="red">100</span>},
+<span class="new">  </span>        end: {x: <span class="red">350</span>, y: <span class="red">150</span>},
+<span class="new">  </span>        direction: <span class="cyan">"counter-clockwise"</span>,
+<span class="new">  </span>        begin: <span class="cyan">"click"</span>
+<span class="new">  </span>      <span class="blue">}
+<span class="new">  </span>    ]</span>)
+<span class="new">  </span>  &lt;/<span class="blue">script</span>&gt;
   &lt;/<span class="blue">body</span>&gt;
               </code></pre>
             </div>
@@ -97,6 +121,138 @@
         </section>
         <section id="documentation">
           <h2>Documentation</h2>
+          <section id="constructor">
+            <h3>The Constructor</h3>
+            <pre><code><span class="blue">Seui</span>(svgSpecifier, animateId, animationSpecifications, defaultSpecifications)</code></pre>
+            <ul>
+              <li><pre><code>svgSpecifier</code></pre> is a specifier for the SVG element to animate within.
+              The first element to match the specifier will be selected.</li>
+              <li><pre><code>animateId</code></pre> is a string id for the element to be animated.</li>
+              <li><pre><code>animationSpecifications</code></pre> is a list of specification objects.
+              Each object contains animation options, a detailed list can be found <a href="#specs">below</a>.
+              Each specification object corresponds to one generated animation.
+              </li>
+              <li><pre><code>defaultSpecifications</code></pre> is a specification object.
+              If a value for an option is not specified in the animationSpecifications for a specific animation,
+              the default value will be taken from here.
+              </li>
+            </ul>
+          </section>
+          <section id="specs">
+            <h3>Specification Options</h3>
+            <p>An example specification object:</p>
+            <div class="code-segment">
+              <pre><code class="base01">{
+  avoid: <span class="cyan">"#toAvoidId"</span>,
+  start: {x: <span class="red">50</span>, y: <span class="red">100</span>},
+  end: {x: <span class="red">350</span>, y: <span class="red">150</span>},
+  direction: <span class="cyan">"clockwise"</span>,
+  begin: <span class="cyan">"1s"</span>
+}</code></pre>
+            </div>
+            <p>A table of all options:</p>
+            <table id="#options-table">
+              <colgroup>
+                <col id="option-col" style="width: 25%;">
+                <col id="type-col" style="width: 15%;">
+                <col id="desc-col" style="width: 35%;">
+                <col id="def-col" style="width: 25%;">
+              </colgroup>
+              <tr>
+                <th>Option</th><th>Type</th><th>Description</th><th>Default*</th>
+              </tr>
+              <tr>
+                <td><pre><code>avoid</code></pre></td>
+                <td>string</td>
+                <td>A specifier for the element to avoid.</td>
+                <td>Will not avoid any element and will take a straight line path.</td>
+              </tr>
+              <tr>
+                <td><pre><code>start</code></pre></td>
+                <td>object <br> { <br> 'x': number, <br> 'y': number <br> }</td>
+                <td>The x and y coordinates for the starting position.</td>
+                <td>**The previous end value. If not, its current position.</td>
+              </tr>
+              <tr>
+                <td><pre><code>end</code></pre></td>
+                <td>object <br> { <br> 'x': number, <br> 'y': number <br> }</td>
+                <td>The x and y coordinates for the ending position.</td>
+                <td>**The next start value. If not, its current position.</td>
+              </tr>
+              <tr>
+                <td><pre><code>direction</code></pre></td>
+                <td>string</td>
+                <td>The direction to travel around the element: "clockwise" or "counter-clockwise".</td>
+                <td>'clockwise'</td>
+              </tr>
+              <tr>
+                <td><pre><code>padding,
+paddingTop,
+paddingLeft,
+paddingBottom,
+paddingRight</code></pre></td>
+                <td>number</td>
+                <td>The padding around the element, in pixels.</td>
+                <td>0</td>
+              </tr>
+              <tr>
+                <td><pre><code>bend</code></pre></td>
+                <td>number</td>
+                <td>The height of the control point for quadratic curves around the element to avoid.
+                Will bend paths parallel to the boundary.</td>
+                <td>0</td>
+              </tr>
+              <tr>
+                <td><pre><code>speed</code></pre></td>
+                <td>number</td>
+                <td>The speed of travel of the animated element in pixels per second.</td>
+                <td>Such that the duration will be '1s'.</td>
+              </tr>
+              <tr>
+                <td><pre><code>dur</code></pre></td>
+                <td>string</td>
+                <td>The duration of the animation.</td>
+                <td>'1s'</td>
+              </tr>
+              <tr>
+                <td><pre><code>begin</code></pre></td>
+                <td>string</td>
+                <td>The begining event to begin the animation.</td>
+                <td>'click'</td>
+              </tr>
+              <tr>
+                <td><pre><code>endAnimation</code></pre></td>
+                <td>string</td>
+                <td>Constrains the active duration.</td>
+                <td>none</td>
+              </tr>
+              <tr>
+                <td><pre><code>min, max,
+restart,
+repeatCount,
+repeatDur,
+calcMode, values,
+keySplines,
+keyTimes,
+from, to, by</code></pre></td>
+                <td>string</td>
+                <td>Other animation options taken from <a href="https://svgwg.org/specs/animations/#TimingAttributes">here</a>.</td>
+                <td></td>
+              </tr>
+            </table>
+            <h4>Notes:</h4>
+            <p>*If not specified in any animation nor default specification.</p>
+            <p>**"start" and "end" options look for the previous end or the next start, respectively,
+              before taking the one specified in "defaultSpecifications".</p>
+
+          </section>
+          <section id="methods">
+            <h3>Methods & API</h3>
+            <p>Once you have an instance of Seui, you have access to several properties and methods.</p>
+            <div class="code-segment">
+              <pre><code><span class="green">const</span> <span class="orange">animator</span> = <span class="blue">Seui</span>(...)</code></pre>
+            </div>
+          </section>
         </section>
     </div>
   </body>

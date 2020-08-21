@@ -1,6 +1,6 @@
 body {
   font-family: Helvetica, Arial, sans-serif;
-  background-image: repeating-linear-gradient(rgba(2, 247, 255, 0.15)0px,
-   rgba(2, 247, 255, 0.25) 144px, rgba(2, 247, 255, 0.15) 288px);
+  background-image: repeating-linear-gradient(transparent 0px,
+   rgba(0, 255, 255, 0.02) 55px, transparent 110px);
   background-attachment: fixed;
 }

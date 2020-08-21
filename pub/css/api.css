@@ -1,34 +1,44 @@
 #main-column-api {
-  width: 61%;
+  width: 61.8%;
+  min-width: 710;
   padding: 55px 21px 55px 21px;
-  /* border-left: solid 13px rgb(2, 120, 255);
-  border-right: solid 13px rgb(2, 120, 255); */
-  /* rgb(2, 120, 255); */
-  box-shadow: 0px 0px 21px rgb(2, 255, 137);
-  /* rgb(2, 120, 255); */
-  /* border-right: solid 34px linear-gradient(to right, rgb(2, 120, 255), transparent); */
-  margin: 0px auto 0px auto;
+  border-left: solid 3px black;
+  /* rgb(0, 0, 255); */
+  border-right: solid 3px black;
+  /* rgb(0, 0, 255); */
+  /* rgb(0, 0, 255); */
+  box-shadow: 0px 0px 5px black;
+  /* rgb(0, 0, 255); */
+  /* border-right: solid 34px linear-gradient(to right, rgb(0, 0, 255), transparent); */
+  margin: 0px auto 0px 288px;
 
-  background-color: rgb(2, 255, 137);
+  background-color: white;
+  /* rgba(0, 255, 255, 1); */
 
 }
 #main-column-api .code-segment {
-  width: fit-content;
+  /* width: fit-content; */
+  max-width: 90%;
+  min-width: 500px;
   padding-right: 8px;
   border: solid 5px #eee8d5;
-  margin: 0px auto 0px auto;
+  margin: 0px auto 13px auto;
   /* margin-left: auto;
   margin-right: 15px; */
   background-color: #fdf6e3;
+  font-size: 13pt;
+}
+#main-column-api .code-segment .new {
+  background-color: #268bd2;
 }
 #main-column-api h1 {
-  width: fit-content;
-  margin: 0px auto 0px auto;
-  color: rgb(2, 120, 255);
+  /* text-align: right; */
+  /* width: fit-content;
+  margin: 0px auto 0px auto; */
 }
 #main-column-api h2 {
   margin: 13px auto auto 34px;
-  color: rgb(2, 120, 255);
+  color: rgb(0, 0, 255);
 }
 #main-column-api p {
   margin: 0px 34px 8px 34px;
@@ -37,5 +47,33 @@
   margin: 13px auto auto 34px;
 }
 #main-column-api code {
+  color: #657b83;
   background-color: #fdf6e3;
+  font-size: 13pt;
 }
+#main-column-api #documentation section {
+  margin: 0px 34px 8px 34px;
+}
+#side-column-api {
+  margin-right: 55px;
+
+  float: left;
+  position: fixed;
+  top: 55px;
+}
+th, td {
+  border-bottom: solid 1px black;
+}
+/* #main-column-api #options-table #option-col {
+  width: 25%;
+}
+#main-column-api #options-table #type-col {
+  width: 10%;
+  padding-right: 8px;
+}
+#main-column-api #options-table #desc-col {
+  width: 40%;
+}
+#main-column-api #options-table #def-col {
+  width: 25%;
+} */
