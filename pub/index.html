@@ -11,10 +11,36 @@
     <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
     <link rel="manifest" href="/site.webmanifest">
     <script defer type="text/javascript" src="js/addHeader.js"></script>
+
+
   </head>
   <body>
     <header id="main-header"></header>
-    <img src="images/seui2-logo1.png" width="377px">
+    <!-- <img src="images/seui2-logo1.png" width="377px"> -->
+    <svg width="610px" height="377px">
+      <image href="images/seui2-logo1.png"
+        x="117" y="100" width="377" height="176">
+      </image>
+      <rect id="animate1"
+        x="48" y="178"
+        width="21" height="21"
+        rx="8" ry="8"
+        fill="rgb(0,255,255)"
+      >
+      </rect>
+      <rect id="animate2"
+        x="542" y="178"
+        width="21" height="21"
+        rx="8" ry="8"
+        fill="rgb(0,255,255)"
+      ></rect>
+    </svg>
+    <a href="/examples.html">
+      <p>Animate your web elements, while avoiding overlap.</p>
+      <p>Make your animations flow.</p>
+    </a>
     <footer><p>Created by <a href="https://github.com/AnthonyJustinDuong">Anthony Duong</a></p></footer>
+    <script type="text/javascript" src="js/seui2.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
   </body>
 </html>

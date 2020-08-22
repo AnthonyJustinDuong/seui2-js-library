@@ -47,7 +47,7 @@
         </svg>
       </div>
       <div id="example1">
-        <h2>Example 1</h2>
+        <h2>Most Basic Example</h2>
         <p>Using the Seui2 library, you can avoid the element like so.</p>
         <div class="code-segment">
           <pre><code> <span class="blue">Seui</span>(<span class="cyan">'#example1 svg'</span>, <span class="cyan">'ex1-animate'</span>, [
@@ -58,7 +58,8 @@
     },
   ]);</code></pre>
         </div>
-        <p>Go <a href="/api.html#getting-started">here</a> to see an explanation and get started.</p>
+        <p>Go <a href="/api.html#getting-started">here</a> to see an explanation
+          of the code above and get started.</p>
         <p>Click the smaller picture to animate it.</p>
         <svg width="1066" height="670">
           <image id="ex1-avoid"
@@ -72,18 +73,117 @@
             x="873" y="100"
             width="160" height="213"
           >
-            <animatemotion href="#ex1Rat" path="m 0 0 h 337z"
-              dur="1s" repeatcount="1" begin="click"></animatemotion>
           </image>
+        </svg>
+      </div>
+      <div id="example2">
+        <h2>Multiple Animations</h2>
+        <p>You have multiple animations chained together by giving more specification objects.
+          You can avoid a different element for each animation.
+        The animations can start one after each other using <code><span class="cyan">'.end+1s'</span></code>
+        at the front of the begin-value list. Notice that if no <code>start</code> value is
+        specified it uses the previous end position.</p>
+        <div class="code-segment">
+          <pre><code> <span class="blue">Seui</span>(<span class="cyan">'#example2 svg'</span>, <span class="cyan">'ex2-animate'</span>, [
+    { start: {x: <span class="red">50</span>, y: <span class="red">150</span>}, end: {x: <span class="red">325</span>, y: <span class="red">200</span>} },
+    { avoid: <span class="cyan">'#ex2-avoid2</span>', end: {x: <span class="red">575</span>, y: <span class="red">125</span>} },
+    { end: {x: <span class="red">50</span>, y: <span class="red">150</span>} }
+  ],
+  {
+    avoid: <span class="cyan">'#ex2-avoid1'</span>,
+    begin: <span class="cyan">'.end+1s;1s'</span>
+  }
+ );</code></pre>
+        </div>
+        <svg width="700" height="350">
+          <rect id="ex2-avoid1"
+            x="150" y="100"
+            width="150" height="150"
+            rx="20" ry="20"
+            fill="rgb(255,64,0)"
+          >
+          </rect>
+          <rect id="ex2-avoid2"
+            x="450" y="100"
+            width="100" height="50"
+            rx="10" ry="10"
+            fill="rgb(255,64,0)"
+          >
+          </rect>
+          <rect id="ex2-animate"
+            x="50" y="150"
+            width="50" height="50"
+            rx="5" ry="5"
+            fill="rgb(0,255,255)"
+          >
+        </rect>
+        </svg>
+      </div>
+      <div id="example3">
+        <h2>More Options</h2>
+        <p>You can specify the direction around the object, a padding, and a speed of animation.
+          There are also more options that are the same to the SMIL animation
+        attributes. Full documentation can be found here.</p>
+        <div class="code-segment">
+          <pre><code> <span class="blue">Seui</span>(<span class="cyan">'#example3 svg'</span>, <span class="cyan">'ex3-animate'</span>, [
+    {
+      start: {x: <span class="red">50</span>, y: <span class="red">150</span>}, end: {x: <span class="red">550</span>, y: <span class="red">150</span>},
+      calcMode: <span class="cyan">'spline'</span>,
+      keySplines: <span class="cyan">'.75 0 .25 1'</span>, keyTimes: <span class="cyan">'0; 1'</span>,
+      begin: <span class="cyan">'mouseover'</span>, dur: <span class="cyan">'3s'</span>,
+      restart: <span class="cyan">'never'</span>
+    },
+    {
+      end: {x: <span class="red">50</span>, y: <span class="red">150</span>},
+      bend: <span class="red">50</span>,
+      direction: <span class="cyan">'counter-clockwise'</span>,
+    },
+    {
+      start: {x: <span class="red">50</span>, y: <span class="red">150</span>}, end: {x:<span class="red">49</span>, y: <span class="red">20</span>},
+      bend: <span class="red">50</span>,
+      direction: <span class="cyan">'counter clockwise'</span>,
+    },
+  ],
+  {
+    avoid: <span class="cyan">'#ex3-avoid'</span>,
+    begin: <span class="cyan">'.end+1s;'</span>,
+    padding: <span class="red">20</span>,
+    speed: <span class="red">500</span>
+  }
+ );</code></pre>
+        </div>
+        <p>Hover your mouse over the blue square to animate it.</p>
+        <svg width="700" height="500">
+          <rect id="ex3-avoid"
+            x="250" y="150"
+            width="200" height="200"
+            rx="20" ry="20"
+            fill="rgb(255,64,0)"
+          >
+          </rect>
+          <rect id="ex3-animate"
+            x="50" y="200"
+            width="100" height="100"
+            rx="20" ry="20"
+            fill="rgb(0,255,255)"
+          >
+        </rect>
         </svg>
       </div>
       <div id="interactive-example">
         <h2>Interactive Example</h2>
         <p>In the example below, you can set the start and end position for the
-          element to animate. Where the coordinates specify the top-left corner
-          of the object. This is the same for the position of the element to avoid.
+          element to animate (blue). Where the coordinates specify the top-left corner
+          of the element. This is the same for the position of the element to avoid (red).
           You can also change the width and height of both.
           The library will take this into account and generate the new path.
+        </p>
+        <div class="code-segment">
+          <pre><code>  <span class="green">const</span> <span class="orange">animator</span> = <span class="blue">Seui</span>(...)
+  <span class="base1">// simply call this function on property changes to re-render the animation</span>
+  <span class="orange">animator</span>.<span class="blue">renderAnimation</span>();</code></pre>
+        </div>
+        <p>
           Click the blue rectangle to animate it.
         </p>
           <table id="table-form">
